@@ -1,0 +1,86 @@
+Bluetooth (HC-06 JY-MCU) State pin on pin 2 of Arduino
+const int BTState = 2; 
+
+int state;
+int ena = 3;
+int in1 = A0; //right motor
+int in2 = A1; //right motor
+int in3 = A2; //left motor
+int in4 = A3; //left motor
+int enb = 11;
+
+void setup()
+{
+  pinMode(BTState, INPUT); 
+  pinMode(in1, OUTPUT);
+  pinMode(in2, OUTPUT);
+  pinMode(in3, OUTPUT);
+  pinMode(in4, OUTPUT);
+  pinMode(ena, OUTPUT);
+  pinMode(enb, OUTPUT);   
+  BlueTooth.begin(9600);
+  Serial.begin(9600);
+}
+
+void loop()
+{
+  //Save income data to variable 'state'
+  if(BlueTooth.available() > 0){     
+      BT_input = BlueTooth.read();   
+  }
+  //Stop car when connection lost or bluetooth disconnected
+  if(digitalRead(BTState)==LOW) { state='S'; }
+  if(Serial.available() > 0){     
+    state = Serial.read();   
+  }
+  if (state == 'F'){forward();}
+  if (state == 'L'){turnLeft();}
+  if (state == 'R'){turnRight();}
+  if (state == 'B'){backward();}
+  if (state == 'S'){stop();}
+}
+
+void forward (){
+  analogWrite(ena,95); 
+  digitalWrite(in1,HIGH);
+  digitalWrite(in2,LOW);
+  analogWrite(enb,130);
+  digitalWrite(in3,LOW);
+  digitalWrite(in4,HIGH);
+}
+
+void turnLeft (){
+  analogWrite(ena,210);//210
+  digitalWrite(in1,HIGH);
+  digitalWrite(in2,LOW);
+  analogWrite(enb,130);//130
+  digitalWrite(in3,HIGH);
+  digitalWrite(in4,LOW);
+}
+
+void turnRight (){
+  analogWrite(ena,180);//155
+  digitalWrite(in1,LOW);
+  digitalWrite(in2,HIGH);
+  analogWrite(enb,235);//235
+  digitalWrite(in3,LOW);
+  digitalWrite(in4,HIGH);
+}
+
+void stop (){
+  analogWrite(ena,0);
+  analogWrite(enb,0);
+  digitalWrite(in1,LOW);
+  digitalWrite(in2,LOW);
+  digitalWrite(in3,LOW);
+  digitalWrite(in4,LOW);
+}
+
+void backward (){
+  analogWrite(ena,80); 
+  digitalWrite(in1,LOW);
+  digitalWrite(in2,HIGH);
+  analogWrite(enb,115);
+  digitalWrite(in3,HIGH);
+  digitalWrite(in4,LOW);
+}

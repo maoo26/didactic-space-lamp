@@ -1,0 +1,102 @@
+#include <LiquidCrystal.h>
+
+const int rs = 8, en = 9, d4 = 4, d5 = 5, d6 = 6, d7 = 7, BL = 10;
+
+LiquidCrystal lcd_1 (rs, en, d4, d5, d6, d7);
+
+int ena = 3;
+int in1 = A0; //right motor
+int in2 = A1; //right motor
+int in3 = A2; //left motor
+int in4 = A3; //left motor
+int enb = 11;
+int ls = 12;
+int rs = 13;
+int trigPin = 2;
+int echoPin = 10;
+int duration;
+int distance;
+
+void setup() {
+
+  pinMode(in1, OUTPUT);
+  pinMode(in2, OUTPUT);
+  pinMode(in3, OUTPUT);
+  pinMode(in4, OUTPUT);
+  pinMode(ena, OUTPUT);
+  pinMode(enb, OUTPUT);
+  pinMode(trigPin, OUTPUT); // Sets the trigPin as an Output
+  pinMode(echoPin, INPUT); // Sets the echoPin as an Input
+  lcd_1.begin(16, 2); 
+
+}
+
+void loop() {
+  // Clears the trigPin
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  // Sets the trigPin on HIGH state for 10 micro seconds
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  // Reads the echoPin, returns the sound wave travel time in microseconds
+  duration = pulseIn(echoPin, HIGH);
+  // Calculating the distance
+  distance = duration * 0.034 / 2;
+  //Show distance
+  lcd_1.setCursor(0, 0);
+  lcd_1.print("distance");lcd_1.print(distance,2);
+  // Stop when distance <=10
+  if(distance<=10){
+    stop();
+  }
+  if ((digitalRead(ls)==HIGH)&&digitalRead(r)==LOW){
+    forward();
+  }
+  if ((digitalRead(ls)==LOW)&&digitalRead(r)==LOW){
+    turnLeft();
+  }
+  if ((digitalRead(ls)==HIGH)&&digitalRead(r)==HIGH){
+    turnRight();
+  }
+  if ((digitalRead(ls)==LOW)&&digitalRead(r)==HIGH){
+    stop(); 
+  }
+
+}
+
+void forward (){
+  analogWrite(ena,95); 
+  digitalWrite(in1,HIGH);//right motor
+  digitalWrite(in2,LOW);//right motor
+  analogWrite(enb,130);
+  digitalWrite(in3,LOW);//left motor
+  digitalWrite(in4,HIGH);//left motor
+}
+
+void turnLeft (){
+  analogWrite(ena,210);
+  digitalWrite(in1,HIGH);//right motor
+  digitalWrite(in2,LOW);//right motor
+  analogWrite(enb,130);
+  digitalWrite(in3,HIGH);//left motor
+  digitalWrite(in4,LOW);//left motor
+}
+
+void turnRight (){
+  analogWrite(ena,155);
+  digitalWrite(in1,LOW);//right motor
+  digitalWrite(in2,HIGH);//right motor
+  analogWrite(enb,235);
+  digitalWrite(in3,LOW);//left motor
+  digitalWrite(in4,HIGH);//left motor
+}
+
+void stop (){
+  analogWrite(ena,0);
+  analogWrite(enb,0);
+  digitalWrite(in1,LOW);
+  digitalWrite(in2,LOW);
+  digitalWrite(in3,LOW);
+  digitalWrite(in4,LOW);
+}

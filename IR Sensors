@@ -1,0 +1,69 @@
+int ena = 3;
+int in1 = A0; //right motor
+int in2 = A1; //right motor
+int in3 = A2; //left motor
+int in4 = A3; //left motor
+int enb = 11;
+int ls = 12;
+int rs = 13;
+
+void setup() {
+
+  pinMode(in1, OUTPUT);
+  pinMode(in2, OUTPUT);
+  pinMode(in3, OUTPUT);
+  pinMode(in4, OUTPUT);
+  pinMode(ena, OUTPUT);
+  pinMode(enb, OUTPUT);
+}
+
+void loop() {
+    if ((digitalRead(ls)==HIGH)&&digitalRead(r)==LOW){
+    forward();
+  }
+  if ((digitalRead(ls)==LOW)&&digitalRead(r)==LOW){
+    turnLeft();
+  }
+  if ((digitalRead(ls)==HIGH)&&digitalRead(r)==HIGH){
+    turnRight();
+  }
+  if ((digitalRead(ls)==LOW)&&digitalRead(r)==HIGH){
+    stop(); 
+  }
+}
+
+void forward (){
+  analogWrite(ena,95); 
+  digitalWrite(in1,HIGH);//right motor
+  digitalWrite(in2,LOW);//right motor
+  analogWrite(enb,130);
+  digitalWrite(in3,LOW);//left motor
+  digitalWrite(in4,HIGH);//left motor
+}
+
+void turnLeft (){
+  analogWrite(ena,210);
+  digitalWrite(in1,HIGH);//right motor
+  digitalWrite(in2,LOW);//right motor
+  analogWrite(enb,130);
+  digitalWrite(in3,HIGH);//left motor
+  digitalWrite(in4,LOW);//left motor
+}
+
+void turnRight (){
+  analogWrite(ena,155);
+  digitalWrite(in1,LOW);//right motor
+  digitalWrite(in2,HIGH);//right motor
+  analogWrite(enb,235);
+  digitalWrite(in3,LOW);//left motor
+  digitalWrite(in4,HIGH);//left motor
+}
+
+void stop (){
+  analogWrite(ena,0);
+  analogWrite(enb,0);
+  digitalWrite(in1,LOW);
+  digitalWrite(in2,LOW);
+  digitalWrite(in3,LOW);
+  digitalWrite(in4,LOW);
+}
